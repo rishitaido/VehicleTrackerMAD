@@ -107,3 +107,39 @@ This log documents all uses of AI assistance throughout the development of the *
 **Prepared by:** Nick Johnson & Rishi Raj  
 **Project:** Vehicle Maintenance Tracker  
 **Date:** 2025-10-23 19:56
+
+
+# AI Transparency Log — Vehicle Maintenance Tracker Project
+**Team Members:** Nick Johnson, Rishi Raj  
+**AI Tool Used:** ChatGPT (GPT-5)
+
+---
+
+Previous entries retained...
+
+
+
+## 6. Next Development Focus Guidance  
+**Date:** 2025-10-23  
+**AI Tool Used:** ChatGPT (GPT-5)  
+
+**What Was Asked / Generated:**  
+- Asked which files to focus on next after completing core UI files (`main.dart`, `app.dart`, `theme.dart`, `widgets.dart`, `garage_screen.dart`, `reminders_screen.dart`, `settings_screen.dart`).  
+- AI provided a clear, prioritized list of next development tasks and files to create:  
+  1. `db.dart` – SQLite setup and table creation  
+  2. `models.dart` – data classes and enums  
+  3. `repos.dart` – database access layer  
+  4. `reminder_engine.dart` – logic for “due soon” reminders  
+  5. `maintenance_list_screen.dart` & `maintenance_form_screen.dart` – for maintenance CRUD  
+  6. `vehicle_form_screen.dart` – for adding/editing vehicles  
+
+**How It Was Applied:**  
+- Used as a guide for upcoming development steps and to plan workload distribution between team members.  
+- This plan now defines the next milestone phase in the project timeline.
+
+**Reflection / What Was Learned:**  
+- Breaking development into small, specific file goals helps maintain consistent progress.  
+- Using AI for roadmap refinement provides clarity and reduces the risk of scope creep.  
+- Having a logical file order ensures the database and UI connect smoothly.
+
+---
