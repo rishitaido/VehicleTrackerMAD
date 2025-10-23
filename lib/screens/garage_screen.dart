@@ -1,8 +1,8 @@
-import 'package: flutter/material.dart';
-import '../widgets.dart';
+import 'package:flutter/material.dart';
+import '../utility/widgets.dart';
 
 class GarageScreen extends StatefulWidget {
-  const GarageScreen(super.key});
+  const GarageScreen({super.key});
 
   @override
   State<GarageScreen> createState() => _GarageScreenState();
@@ -61,7 +61,7 @@ class _GarageScreenState extends State<GarageScreen> {
         ],
       ),
       body: _buildBody(),
-      floatingActionButton: floatingActionButton.extended(
+      floatingActionButton: FloatingActionButton.extended(
         onPressed: _navigateToAddVehicle,
         icon: const Icon(Icons.add),
         label: const Text('Add Vehicle'),
