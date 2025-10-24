@@ -2,9 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
-import '../utility/widgets.dart';
+import '../widgets.dart';
 import '../repos.dart';
 import '../models.dart';
+import '../validators.dart';
 
 class VehicleFormScreen extends StatefulWidget {
   const VehicleFormScreen({super.key});
@@ -89,53 +90,6 @@ class _VehicleFormScreenState extends State<VehicleFormScreen> {
     }
   }
   
-  String? _validateRequired(String? value, String fieldName) {
-    if (value == null || value.trim().isEmpty) {
-      return '$fieldName is required';
-    }
-    return null;
-  }
-  
-  String? _validateYear(String? value) {
-    if (value == null || value.trim().isEmpty) {
-      return 'Year is required';
-    }
-    
-    final year = int.tryParse(value);
-    if (year == null) {
-      return 'Year must be a number';
-    }
-    
-    final currentYear = DateTime.now().year;
-    if (year < 1900 || year > currentYear + 1) {
-      return 'Year must be between 1900 and ${currentYear + 1}';
-    }
-    
-    return null;
-  }
-  
-  String? _validateMileage(String? value) {
-    if (value == null || value.trim().isEmpty) {
-      return 'Mileage is required';
-    }
-    
-    final mileage = int.tryParse(value);
-    if (mileage == null) {
-      return 'Mileage must be a number';
-    }
-    
-    if (mileage < 0) {
-      return 'Mileage cannot be negative';
-    }
-    
-    // Check for mileage decrease when editing
-    if (_editingVehicle != null && mileage < _editingVehicle!.currentMileage) {
-      return 'New mileage ($mileage) cannot be less than current mileage (${_editingVehicle!.currentMileage})';
-    }
-    
-    return null;
-  }
-  
   Future<void> _save() async {
     if (!_formKey.currentState!.validate()) return;
     
@@ -163,7 +117,7 @@ class _VehicleFormScreenState extends State<VehicleFormScreen> {
       }
       
       if (mounted) {
-        Navigator.pop(context, true); // Return true to indicate success
+        Navigator.pop(context, true);
       }
     } catch (e) {
       if (mounted) {
@@ -244,7 +198,7 @@ class _VehicleFormScreenState extends State<VehicleFormScreen> {
                   prefixIcon: Icon(Icons.label),
                 ),
                 textCapitalization: TextCapitalization.words,
-                validator: (value) => _validateRequired(value, 'Nickname'),
+                validator: (value) => Validators.required(value, 'Nickname'),
               ),
               const SizedBox(height: 16),
               
@@ -257,7 +211,7 @@ class _VehicleFormScreenState extends State<VehicleFormScreen> {
                   prefixIcon: Icon(Icons.business),
                 ),
                 textCapitalization: TextCapitalization.words,
-                validator: (value) => _validateRequired(value, 'Make'),
+                validator: (value) => Validators.required(value, 'Make'),
               ),
               const SizedBox(height: 16),
               
@@ -270,7 +224,7 @@ class _VehicleFormScreenState extends State<VehicleFormScreen> {
                   prefixIcon: Icon(Icons.directions_car),
                 ),
                 textCapitalization: TextCapitalization.words,
-                validator: (value) => _validateRequired(value, 'Model'),
+                validator: (value) => Validators.required(value, 'Model'),
               ),
               const SizedBox(height: 16),
               
@@ -284,7 +238,7 @@ class _VehicleFormScreenState extends State<VehicleFormScreen> {
                 ),
                 keyboardType: TextInputType.number,
                 inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                validator: _validateYear,
+                validator: Validators.year,
               ),
               const SizedBox(height: 16),
               
@@ -299,7 +253,12 @@ class _VehicleFormScreenState extends State<VehicleFormScreen> {
                 ),
                 keyboardType: TextInputType.number,
                 inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                validator: _validateMileage,
+                validator: (value) {
+                  if (_editingVehicle != null) {
+                    return Validators.mileageIncrease(value, _editingVehicle!.currentMileage);
+                  }
+                  return Validators.mileage(value);
+                },
               ),
               const SizedBox(height: 24),
               
@@ -323,6 +282,7 @@ class _VehicleFormScreenState extends State<VehicleFormScreen> {
                 ),
                 textCapitalization: TextCapitalization.characters,
                 maxLength: 17,
+                validator: Validators.vin,
               ),
               const SizedBox(height: 16),
               

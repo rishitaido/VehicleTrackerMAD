@@ -1,10 +1,11 @@
 import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:intl/intl.dart';
-import '../utility/widgets.dart';
+import '../widgets.dart';
 import '../repos.dart';
 import '../models.dart';
-import '../utility/reminder_helper.dart';
+import '../reminder_engine.dart';
+import '../validators.dart';
 
 class MaintenanceFormScreen extends StatefulWidget {
   const MaintenanceFormScreen({super.key});
@@ -59,7 +60,6 @@ class _MaintenanceFormScreenState extends State<MaintenanceFormScreen> {
     try {
       _vehicle = await _vehiclesRepo.getById(_vehicleId!);
       if (_vehicle != null && _mileageController.text.isEmpty) {
-        // Pre-fill with current mileage
         _mileageController.text = _vehicle!.currentMileage.toString();
       }
       setState(() {});
@@ -76,7 +76,7 @@ class _MaintenanceFormScreenState extends State<MaintenanceFormScreen> {
     _mileageController.text = _editingLog!.mileage.toString();
     _costController.text = _editingLog!.cost.toStringAsFixed(2);
     _notesController.text = _editingLog!.notes ?? '';
-    _createReminder = false; // Don't create reminder when editing
+    _createReminder = false;
   }
   
   @override
@@ -100,45 +100,6 @@ class _MaintenanceFormScreenState extends State<MaintenanceFormScreen> {
     }
   }
   
-  String? _validateMileage(String? value) {
-    if (value == null || value.trim().isEmpty) {
-      return 'Mileage is required';
-    }
-    
-    final mileage = int.tryParse(value);
-    if (mileage == null) {
-      return 'Mileage must be a number';
-    }
-    
-    if (mileage < 0) {
-      return 'Mileage cannot be negative';
-    }
-    
-    // Check against vehicle's current mileage
-    if (_vehicle != null && mileage > _vehicle!.currentMileage) {
-      return 'Mileage ($mileage) cannot be greater than vehicle mileage (${_vehicle!.currentMileage})';
-    }
-    
-    return null;
-  }
-  
-  String? _validateCost(String? value) {
-    if (value == null || value.trim().isEmpty) {
-      return 'Cost is required';
-    }
-    
-    final cost = double.tryParse(value);
-    if (cost == null) {
-      return 'Cost must be a number';
-    }
-    
-    if (cost < 0) {
-      return 'Cost cannot be negative';
-    }
-    
-    return null;
-  }
-  
   Future<void> _save() async {
     if (!_formKey.currentState!.validate()) return;
     if (_vehicleId == null || _vehicle == null) return;
@@ -157,15 +118,12 @@ class _MaintenanceFormScreenState extends State<MaintenanceFormScreen> {
       );
       
       if (_editingLog == null) {
-        // Adding new log
         await _maintenanceRepo.add(log);
         
-        // Create reminder if checked
         if (_createReminder) {
           await _reminderEngine.createReminderAfterMaintenance(log, _vehicle!);
         }
       } else {
-        // Updating existing log
         await _maintenanceRepo.update(log);
       }
       
@@ -297,7 +255,12 @@ class _MaintenanceFormScreenState extends State<MaintenanceFormScreen> {
                 ),
                 keyboardType: TextInputType.number,
                 inputFormatters: [FilteringTextInputFormatter.digitsOnly],
-                validator: _validateMileage,
+                validator: (value) {
+                  if (_vehicle != null) {
+                    return Validators.mileageWithMax(value, _vehicle!.currentMileage);
+                  }
+                  return Validators.mileage(value);
+                },
               ),
               const SizedBox(height: 16),
               
@@ -313,7 +276,7 @@ class _MaintenanceFormScreenState extends State<MaintenanceFormScreen> {
                 inputFormatters: [
                   FilteringTextInputFormatter.allow(RegExp(r'^\d*\.?\d{0,2}')),
                 ],
-                validator: _validateCost,
+                validator: Validators.cost,
               ),
               const SizedBox(height: 16),
               
@@ -331,7 +294,7 @@ class _MaintenanceFormScreenState extends State<MaintenanceFormScreen> {
               ),
               const SizedBox(height: 24),
               
-              // Create reminder checkbox (only when adding new)
+              // Create reminder checkbox
               if (!isEditing) ...[
                 Card(
                   child: CheckboxListTile(
