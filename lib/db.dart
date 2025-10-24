@@ -54,7 +54,7 @@ class DB{
         notes TEXT,
         receiptImagePath TEXT, 
         createdAt TEXT NOT NULL, 
-        FOREGIN KEY (vehicleId) REFERENCES vehicles(id) ON DELETE CASCASE
+        FOREIGN KEY (vehicleId) REFERENCES vehicles(id) ON DELETE CASCADE
         )
       ''');
 

@@ -22,7 +22,7 @@ class MyApp extends StatelessWidget{
       routes: {
         '/': (context) => GarageScreen(),
         '/vehicle-form': (context) => const VehicleFormScreen(),
-        'Mantenance-list': (context) => const MaintenanceListScreen(),
+        //'Mantenance-list': (context) => const MaintenanceListScreen(),
         'reminders': (context) => RemindersScreen(), 
         'settings': (context) => SettingsScreen(),
       },
