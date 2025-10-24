@@ -9,6 +9,7 @@ import 'screens/settings_screen.dart';
 
 class MyApp extends StatelessWidget{
   const MyApp({super.key}); 
+  
   @override
   Widget build(BuildContext context){
     return MaterialApp(
@@ -17,14 +18,13 @@ class MyApp extends StatelessWidget{
       theme: AppTheme.light,
       darkTheme: AppTheme.dark, 
       themeMode: ThemeMode.system,
-
-      initialRoute: '/',
+      home: const GarageScreen(),
+      
       routes: {
-        '/': (context) => GarageScreen(),
         '/vehicle-form': (context) => const VehicleFormScreen(),
         //'Mantenance-list': (context) => const MaintenanceListScreen(),
-        'reminders': (context) => RemindersScreen(), 
-        'settings': (context) => SettingsScreen(),
+        '/reminders': (context) => RemindersScreen(), 
+        '/settings': (context) => SettingsScreen(),
       },
     );
   }

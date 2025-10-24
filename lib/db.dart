@@ -16,48 +16,57 @@ class DB{
     final path = join(databasesPath, 'vehicle_tracker.db'); 
     _db = await openDatabase(
       path,
-      version: 1, 
+      version: 2, 
       onCreate: _createSchema, 
+        onUpgrade: (db, oldVersion, newVersion) async {
+        debugPrint('Upgrading DB from $oldVersion → $newVersion');
+        await db.execute('DROP TABLE IF EXISTS maintenance_logs');
+        await db.execute('DROP TABLE IF EXISTS reminders');
+        await db.execute('DROP TABLE IF EXISTS vehicles');
+        await _createSchema(db, newVersion);
+      },
+      
       onConfigure: (db) async{
         await db.execute('PRAGMA foreign_keys = ON'); 
       },
     );
-
-    debugPrint('DB initailized at: $path');
   }
 
-  Future<void> _createSchema(Database db, int version) async{
-    await db.execute(''' 
-      CREATE TABLE vehicle( 
-        id INTEGER PRIMARY KEY AUTOINCREMENT, 
-        nickname TEXT NOT NULL, 
-        make TEXT NOT NULL, 
-        model TEXT NOT NULL, 
-        year INTEGER NOT NULL, 
-        currentMilage INTEGER NOT NULL, 
-        vin TEXT, 
+  Future<void> _createSchema(Database db, int version) async {
+    // Create vehicles table
+    await db.execute('''
+      CREATE TABLE vehicles (
+        id INTEGER PRIMARY KEY AUTOINCREMENT,
+        nickname TEXT NOT NULL,
+        make TEXT NOT NULL,
+        model TEXT NOT NULL,
+        year INTEGER NOT NULL,
+        currentMileage INTEGER NOT NULL,
+        vin TEXT,
         licensePlate TEXT,
-        imagePath TEXT, 
+        imagePath TEXT,
         createdAt TEXT NOT NULL,
         updatedAt TEXT NOT NULL
       )
-      ''');
-
+    ''');
+    
+    // Create maintenance_logs table
     await db.execute('''
-        CREATE TABLE maintenance_logs(
+      CREATE TABLE maintenance_logs (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
         vehicleId INTEGER NOT NULL,
         type TEXT NOT NULL,
-        date TEXT NOT NULL, 
-        mileage INTEGER NOT NULL, 
-        cost REAL NOT NULL, 
+        date TEXT NOT NULL,
+        mileage INTEGER NOT NULL,
+        cost REAL NOT NULL,
         notes TEXT,
-        receiptImagePath TEXT, 
-        createdAt TEXT NOT NULL, 
+        receiptImagePath TEXT,
+        createdAt TEXT NOT NULL,
         FOREIGN KEY (vehicleId) REFERENCES vehicles(id) ON DELETE CASCADE
-        )
-      ''');
-
+      )
+    ''');
+    
+    // Create reminders table
     await db.execute('''
       CREATE TABLE reminders (
         id INTEGER PRIMARY KEY AUTOINCREMENT,
@@ -71,8 +80,8 @@ class DB{
         FOREIGN KEY (vehicleId) REFERENCES vehicles(id) ON DELETE CASCADE
       )
     ''');
-
-    debugPrint('✅ Database schema created (v$version)');
+    
+    print('✅ Database schema created (v$version)');
   }
   //get DB instance
   Database get db{
