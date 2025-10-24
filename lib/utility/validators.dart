@@ -1,6 +1,6 @@
-// Form validators for the Vehicle Tracker app
+// Form validators for Vehicle and Maintenance screens
 class Validators {
-  /// Validate required field
+  // Validate required field
   static String? required(String? value, String fieldName) {
     if (value == null || value.trim().isEmpty) {
       return '$fieldName is required';
@@ -27,7 +27,7 @@ class Validators {
     return null;
   }
   
-  // Validate mileage (basic)
+  // Validate mileage
   static String? mileage(String? value) {
     if (value == null || value.trim().isEmpty) {
       return 'Mileage is required';
@@ -147,7 +147,7 @@ class Validators {
     return email(value);
   }
   
-  /// Validate phone (if needed in future)
+  /// Validate phone
   static String? phone(String? value) {
     if (value == null || value.trim().isEmpty) {
       return 'Phone is required';
