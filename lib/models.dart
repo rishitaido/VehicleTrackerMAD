@@ -8,9 +8,6 @@ enum ServiceType {
   inspection,
   batteryReplacement,
   airFilter,
-  transmission,
-  coolantFlush,
-  sparkPlugs,
   other;
 
   String get label {
