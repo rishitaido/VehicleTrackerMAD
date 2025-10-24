@@ -143,3 +143,50 @@ Previous entries retained...
 - Having a logical file order ensures the database and UI connect smoothly.
 
 ---
+
+## 7. Merge Conflict Resolution Assistance  
+**Date:** 2025-10-24  
+**AI Tool Used:** ChatGPT (GPT-5)  
+
+**What Was Asked / Generated:**  
+- Asked for help resolving a Git merge conflict that occurred while merging the `garage_screen2` branch.  
+- AI explained what merge conflicts are, why they happen, and provided detailed step-by-step instructions for identifying, resolving, and committing the fix.  
+
+**How It Was Applied:**  
+- Used the provided steps to identify unmerged files using `git status`.  
+- Edited files manually to remove Git conflict markers (`<<<<<<<`, `=======`, `>>>>>>>`).  
+- Added resolved files with `git add`, then completed the merge using `git commit`.  
+
+**Reflection / What Was Learned:**  
+- Learned how to interpret Git’s conflict markers and resolve version differences manually.  
+- Gained confidence handling Git merges safely without losing work.  
+- Understood how `git status`, `git add`, and `git commit` work together during conflict resolution.
+
+---
+
+## 8. SQLite Schema Debugging (Syntax Error Fix)  
+**Date:** 2025-10-24  
+**AI Tool Used:** ChatGPT (GPT-5)  
+
+**What Was Asked / Generated:**  
+- Asked why the Flutter app failed to run after a hot restart.  
+- The error log showed a SQLite syntax issue in the `CREATE TABLE maintenance_logs` statement within `db.dart`.  
+- AI analyzed the error and identified specific typos and syntax mistakes in the SQL statement.
+
+**How It Was Applied:**  
+- Fixed spelling mistakes in the SQL schema:  
+  - `FOREGIN` → corrected to `FOREIGN`  
+  - `CASCASE` → corrected to `CASCADE`  
+- Removed an extra comma before the `FOREIGN KEY` line.  
+- Rebuilt and relaunched the app, confirming that the database initialized successfully and the UI loaded normally.  
+- Verified CRUD operations (add, update, delete) work correctly for vehicles and maintenance logs.
+
+**Reflection / What Was Learned:**  
+- Even small syntax errors can prevent an app from initializing.  
+- SQLite schema creation requires precise SQL keyword spelling and punctuation.  
+- Flutter’s console logs point to the exact issue if you read the **first error line** carefully.  
+- Uninstalling or deleting the app’s local database after a schema fix ensures a clean restart.  
+
+✅ **Result:** The app now runs successfully with a cleanly initialized SQLite database and proper table creation.
+
+---
