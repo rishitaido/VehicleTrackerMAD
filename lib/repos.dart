@@ -80,3 +80,105 @@ class VehiclesRepo{
     return maps.map((map) => Vehicle.fromMap(map)).toList();
   }
 }
+
+class MaintenanceRepo{
+  final Database db = DB.instance.db; 
+
+  Future<List<MaintenanceLog>> getForVehicle(int vehicleId) async{
+    final maps = await db.query(
+      'maintenance_logs',
+      where:'vehicleId = ?',
+      whereArgs: [vehicleId],
+      orderBy: 'date DESC',
+    );
+    return maps.map((map) => MaintenanceLog.fromMap(map)).toList();
+  }
+
+  Future<int> add(MaintenanceLog log) async{
+    return await db.insert('maintenance_logs', log.toMap());
+  }
+
+  Future<int> update(MaintenanceLog log) async{
+    return await db.update(
+      'maintenance_logs',
+      log.toMap(),
+      where: 'id=?',
+      whereArgs: [log.id]
+    );
+  }
+  
+  Future<int> delete(int id) async{
+    return await db.delete(
+      'maintenance_logs',
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+  }
+  //Get Total Maintenance Count for Vehicle
+  Future<int> getCountForVehicle(int vehicleId) async{
+    final result = await db.rawQuery(
+      'SELECT COUNT(*) as count FROM maintenance_logs WHERE vehicleId = ?',
+      [vehicleId],
+    );
+    return Sqflite.firstIntValue(result) ?? 0;
+  }
+
+  //Get total cost for vehicle
+  Future<double> getTotalCostForVehicle(int vehicleId) async{
+    final result = await db.rawQuery(
+      'SELECT sum(cost) as total FROM maintenance_logs WHERE vehicleId = ?',
+      [vehicleId],
+    );
+    final value = result.first['total']; 
+    if (value == null) return 0.0; 
+    return (value as num).toDouble(); 
+  }
+}
+
+class RemindersRepo{
+  final Database db = DB.instance.db;
+
+  Future<List<Reminder>> getActive() async{
+    final maps = await db.query(
+      'reminders',
+      where: 'isCompleted = ?',
+      whereArgs: [0],
+      orderBy: 'dueDate ASC',
+    );
+    return maps.map((map) => Reminder.fromMap(map)).toList();
+  }
+
+  Future<List<Reminder>> getForVehicle(int vehicleId) async{
+    final maps = await db.query(
+      'reminders',
+      where: 'vehicleId = ? AND isCompleted = ?',
+      whereArgs: [vehicleId, 0],
+      orderBy: 'dueDate ASC', 
+    );
+    return maps.map((map) => Reminder.fromMap(map)).toList(); 
+  }
+
+  Future<int> add(Reminder reminder) async{
+    return await db.insert('reminders', reminder.toMap());
+  }
+
+  Future<int> complete(int id) async{
+    return await db.update(
+      'reminders',
+      {
+        'isCompleted' : 1,
+        'completedAt' : DateTime.now().toString(),
+      },
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+  }
+
+  Future<int> delete(int id) async{
+    return await db.delete(
+      'reminders',
+      where: 'id = ?',
+      whereArgs: [id],
+    );
+  }
+}
