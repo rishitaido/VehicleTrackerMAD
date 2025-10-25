@@ -36,6 +36,10 @@ dependencies:
   cupertino_icons: ^1.0.8
   sqflite: ^2.3.0
   path: ^1.8.3
+  
+  provider: ^6.1.1
+  path_provider: ^2.1.1
+
 
   intl: ^0.18.1
   shared_preferences: ^2.2.2
