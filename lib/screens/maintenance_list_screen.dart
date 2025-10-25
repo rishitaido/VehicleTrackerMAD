@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:intl/intl.dart';
-import '../widgets.dart';
+import '../utility/widgets.dart';
 import '../repos.dart';
 import '../models.dart';
 
