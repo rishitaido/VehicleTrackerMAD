@@ -2,10 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter/services.dart';
 import 'package:image_picker/image_picker.dart';
 import 'dart:io';
-import '../widgets.dart';
+import '../utility/widgets.dart';
 import '../repos.dart';
 import '../models.dart';
-import '../validators.dart';
+import '../utility/validators.dart';
 
 class VehicleFormScreen extends StatefulWidget {
   const VehicleFormScreen({super.key});

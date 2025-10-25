@@ -36,20 +36,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                   ),
             ),
           ),
-          
-          // Theme Mode Radio Buttons
-          RadioListTile<ThemeMode>(
-            secondary: const Icon(Icons.brightness_auto),
-            title: const Text('System Default'),
-            subtitle: const Text('Follow system theme'),
-            value: ThemeMode.system,
-            groupValue: themeProvider.themeMode,
-            onChanged: (value) {
-              if (value != null) {
-                themeProvider.setThemeMode(value);
-              }
-            },
-          ),
+    
           RadioListTile<ThemeMode>(
             secondary: const Icon(Icons.light_mode),
             title: const Text('Light Mode'),
