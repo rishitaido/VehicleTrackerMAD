@@ -1,16 +1,73 @@
-# flutter_application_1
-
-A new Flutter project.
-
 ## Getting Started
 
-This project is a starting point for a Flutter application.
+### Prerequisites
 
-A few resources to get you started if this is your first Flutter project:
+- Flutter SDK (^3.11.0)
+- Dart SDK
+- Android Studio / Xcode (for mobile deployment)
 
-- [Lab: Write your first Flutter app](https://docs.flutter.dev/get-started/codelab)
-- [Cookbook: Useful Flutter samples](https://docs.flutter.dev/cookbook)
+### Installation
 
-For help getting started with Flutter development, view the
-[online documentation](https://docs.flutter.dev/), which offers tutorials,
-samples, guidance on mobile development, and a full API reference.
+1. Clone the repository:
+```bash
+git clone https://github.com/rishitaido/VehicleTrackerMAD.git
+```
+
+2. Navigate to the project directory:
+```bash
+cd VehicleTrackerMAD-1
+```
+
+3. Install dependencies:
+```bash
+flutter pub get
+```
+
+4. Run the application:
+```bash
+flutter run
+```
+
+## Project Structure
+
+- `lib/`
+  - `screens/` - All application screens
+  - `models.dart` - Data models
+  - `repos.dart` - Data repositories
+  - `db.dart` - Database operations
+  - `theme.dart` - Theme configuration
+  - `utility/` - Helper functions and widgets
+
+## Database Schema
+
+The application uses SQLite for local data storage with the following main tables:
+
+- `vehicles` - Stores vehicle information
+- `maintenance_logs` - Tracks maintenance records
+- `reminders` - Stores maintenance reminders
+
+## Supported Platforms
+
+- Android
+- iOS
+- Web
+- Linux
+- macOS
+- Windows
+
+## License
+
+This project is licensed under the MIT License - see the LICENSE file for details.
+
+## Acknowledgments
+
+- Team Members: Nick Johnson, Rishi Raj
+- Flutter and Dart teams
+- Contributors and testers
+
+## Version
+
+Current Version: 1.0.0
+
+## Presentation 
+A presentation detailing the project can be found [https://drive.google.com/file/d/1efwtCBIpMm5e5x4PpIIJSBIscR3OlMh_/view?usp=sharing]
