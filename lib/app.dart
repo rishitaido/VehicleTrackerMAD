@@ -22,7 +22,7 @@ class MyApp extends StatelessWidget {
             title: 'Vehicle Tracker',
             debugShowCheckedModeBanner: false,
             
-            // Theme configuration - using YOUR custom theme!
+            // Theme configuration
             theme: AppTheme.light,
             darkTheme: AppTheme.dark,
             themeMode: themeProvider.themeMode,
