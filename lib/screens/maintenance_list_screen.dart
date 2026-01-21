@@ -25,10 +25,14 @@ class _MaintenanceListScreenState extends State<MaintenanceListScreen> {
   void didChangeDependencies() {
     super.didChangeDependencies();
     
-    // Get vehicle ID from arguments
+    // Get vehicle/ID from arguments
     if (_vehicleId == null) {
       final args = ModalRoute.of(context)?.settings.arguments;
-      if (args is int) {
+      if (args is Vehicle) {
+        _vehicle = args;
+        _vehicleId = args.id;
+        _loadData();
+      } else if (args is int) {
         _vehicleId = args;
         _loadData();
       }
@@ -38,10 +42,15 @@ class _MaintenanceListScreenState extends State<MaintenanceListScreen> {
   Future<void> _loadData() async {
     if (_vehicleId == null) return;
     
-    setState(() => _isLoading = true);
+    // Only show loading if we don't have the vehicle yet
+    if (_vehicle == null) {
+      setState(() => _isLoading = true);
+    }
     
     try {
-      _vehicle = await _vehiclesRepo.getById(_vehicleId!);
+      if (_vehicle == null) {
+        _vehicle = await _vehiclesRepo.getById(_vehicleId!);
+      }
       _logs = await _maintenanceRepo.getForVehicle(_vehicleId!);
     } catch (e) {
       print('Error loading maintenance: $e');
@@ -113,7 +122,17 @@ class _MaintenanceListScreenState extends State<MaintenanceListScreen> {
     
     return Scaffold(
       appBar: AppBar(
-        title: Text('$vehicleName Maintenance'),
+        title: Row(
+          children: [
+            if (_vehicle != null)
+              Hero(
+                tag: 'vehicle_icon_${_vehicle!.id}',
+                child: const Icon(Icons.directions_car, size: 24),
+              ),
+            if (_vehicle != null) const SizedBox(width: 12),
+            Text('$vehicleName Maintenance'),
+          ],
+        ),
       ),
       body: _buildBody(),
       floatingActionButton: FloatingActionButton.extended(

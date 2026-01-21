@@ -98,7 +98,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
           ListTile(
             leading: const Icon(Icons.info_outline),
             title: const Text('Version'),
-            subtitle: const Text('Vehicle Maintenance Tracker v1.0.0'),
+            subtitle: const Text('Vehicle Maintenance Tracker v1.1.0'),
           ),
           ListTile(
             leading: const Icon(Icons.help_outline),
@@ -108,7 +108,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
               showAboutDialog(
                 context: context,
                 applicationName: 'Vehicle Tracker',
-                applicationVersion: '1.0.0',
+                applicationVersion: '1.1.0',
                 applicationIcon: const Icon(Icons.directions_car, size: 48),
                 children: const [
                   Text(
@@ -117,6 +117,7 @@ class _SettingsScreenState extends State<SettingsScreen> {
                     'Features:\n'
                     '• Vehicle management\n'
                     '• Maintenance logs\n'
+                    '• Analytics Dashboard\n'
                     '• Automatic reminders\n'
                     '• Light/Dark themes',
                   ),

@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import '../utility/widgets.dart';
 import '../repos.dart';
 import '../models.dart';
+import 'analytics_screen.dart';
 
 class GarageScreen extends StatefulWidget {
   const GarageScreen({super.key});
@@ -80,11 +81,18 @@ class _GarageScreenState extends State<GarageScreen> {
     await Navigator.pushNamed(context, '/reminders');
   }
   
+  Future<void> _navigateToAnalytics() async {
+    await Navigator.push(
+      context,
+      MaterialPageRoute(builder: (_) => const AnalyticsScreen()),
+    );
+  }
+  
   Future<void> _navigateToMaintenanceList(Vehicle vehicle) async {
     await Navigator.pushNamed(
       context,
       '/maintenance-list',
-      arguments: vehicle.id,
+      arguments: vehicle,
     );
     // Refresh data when returning
     _loadVehicles();
@@ -124,6 +132,11 @@ class _GarageScreenState extends State<GarageScreen> {
       appBar: AppBar(
         title: const Text('My Garage'),
         actions: [
+          IconButton(
+            icon: const Icon(Icons.analytics_outlined),
+            onPressed: _navigateToAnalytics,
+            tooltip: 'Analytics',
+          ),
           IconButton(
             icon: const Icon(Icons.notifications_outlined),
             onPressed: _navigateToReminders,
@@ -216,13 +229,16 @@ class _VehicleCard extends StatelessWidget {
               Row(
                 children: [
                   // Icon
-                  CircleAvatar(
-                    radius: 24,
-                    backgroundColor: Theme.of(context).colorScheme.primary.withOpacity(0.1),
-                    child: Icon(
-                      Icons.directions_car,
-                      color: Theme.of(context).colorScheme.primary,
-                      size: 28,
+                  Hero(
+                    tag: 'vehicle_icon_${vehicle.id}',
+                    child: CircleAvatar(
+                      radius: 24,
+                      backgroundColor: Theme.of(context).colorScheme.primary.withOpacity(0.1),
+                      child: Icon(
+                        Icons.directions_car,
+                        color: Theme.of(context).colorScheme.primary,
+                        size: 28,
+                      ),
                     ),
                   ),
                   const SizedBox(width: 12),
