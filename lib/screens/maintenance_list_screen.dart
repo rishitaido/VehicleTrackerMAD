@@ -4,6 +4,8 @@ import '../utility/widgets.dart';
 import '../repos.dart';
 import '../models.dart';
 
+import '../utility/pdf_generator.dart';
+
 class MaintenanceListScreen extends StatefulWidget {
   const MaintenanceListScreen({super.key});
 
@@ -115,6 +117,19 @@ class _MaintenanceListScreenState extends State<MaintenanceListScreen> {
       }
     }
   }
+
+  Future<void> _exportReport() async {
+    if (_vehicle == null) return;
+    try {
+      await PdfGenerator.generateVehicleReport(_vehicle!, _logs);
+    } catch (e) {
+      if (mounted) {
+        ScaffoldMessenger.of(context).showSnackBar(
+          SnackBar(content: Text('Error generating report: $e')),
+        );
+      }
+    }
+  }
   
   @override
   Widget build(BuildContext context) {
@@ -133,6 +148,14 @@ class _MaintenanceListScreenState extends State<MaintenanceListScreen> {
             Text('$vehicleName Maintenance'),
           ],
         ),
+        actions: [
+          if (_vehicle != null && _logs.isNotEmpty)
+            IconButton(
+              icon: const Icon(Icons.share),
+              tooltip: 'Export Report',
+              onPressed: _exportReport,
+            ),
+        ],
       ),
       body: _buildBody(),
       floatingActionButton: FloatingActionButton.extended(

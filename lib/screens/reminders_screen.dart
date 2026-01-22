@@ -3,6 +3,7 @@ import 'package:intl/intl.dart';
 import '../utility/widgets.dart';
 import '../repos.dart';
 import '../models.dart';
+import '../utility/notification_service.dart';
 import '../utility/reminder_helper.dart';
 
 class RemindersScreen extends StatefulWidget {
@@ -16,6 +17,7 @@ class _RemindersScreenState extends State<RemindersScreen> {
   final _remindersRepo = RemindersRepo();
   final _vehiclesRepo = VehiclesRepo();
   final _reminderEngine = ReminderEngine();
+  final _notificationService = NotificationService();
   
   bool _isLoading = false;
   List<Reminder> _reminders = [];
@@ -29,6 +31,7 @@ class _RemindersScreenState extends State<RemindersScreen> {
   @override
   void initState() {
     super.initState();
+    _notificationService.requestPermissions();
     _loadReminders();
   }
   
@@ -130,9 +133,10 @@ class _RemindersScreenState extends State<RemindersScreen> {
       isDestructive: true,
     );
     
-    if (confirmed && reminder.id != null) {
-      try {
-        await _remindersRepo.delete(reminder.id!);
+      if (confirmed && reminder.id != null) {
+        try {
+          await _notificationService.cancelReminder(reminder.id!);
+          await _remindersRepo.delete(reminder.id!);
         _loadReminders();
         if (mounted) {
           ScaffoldMessenger.of(context).showSnackBar(
@@ -458,7 +462,7 @@ class _ReminderCard extends StatelessWidget {
                               color: _statusColor,
                               fontSize: 12,
                               fontWeight: FontWeight.w600,
-                            ),
+                              ),
                           ),
                         ],
                       ],
@@ -499,7 +503,7 @@ class _ReminderCard extends StatelessWidget {
                               color: _statusColor,
                               fontSize: 12,
                               fontWeight: FontWeight.w600,
-                            ),
+                              ),
                           ),
                         ],
                       ],

@@ -1,9 +1,11 @@
 import '/models.dart';
 import '/repos.dart';
+import 'notification_service.dart';
 
 // Reminder engine for calculating due dates and creating reminders
 class ReminderEngine {
   final _remindersRepo = RemindersRepo();
+  final _notificationService = NotificationService();
   
   // Service intervals in miles
   static const Map<ServiceType, int> mileageIntervals = {
@@ -46,7 +48,17 @@ class ReminderEngine {
       isCompleted: false,
     );
     
-    await _remindersRepo.add(reminder);
+    final id = await _remindersRepo.add(reminder);
+    
+    // Schedule notification if due date is present
+    if (reminder.dueDate != null) {
+      await _notificationService.scheduleReminder(
+        id,
+        'Maintenance Due: ${log.type.label}',
+        '${vehicle.nickname} needs ${log.type.label} service.',
+        reminder.dueDate!,
+      );
+    }
     
     print('Reminder created: ${log.type.label} due at $dueMileage miles or $dueDate');
   }
@@ -139,7 +151,22 @@ class ReminderEngine {
       isCompleted: false,
     );
     
-    await _remindersRepo.add(newReminder);
+    // Cancel notification for completed reminder
+    if (reminder.id != null) {
+      await _notificationService.cancelReminder(reminder.id!);
+    }
+    
+    final id = await _remindersRepo.add(newReminder);
+    
+    // Schedule notification for new reminder
+    if (newReminder.dueDate != null) {
+      await _notificationService.scheduleReminder(
+        id,
+        'Maintenance Due: ${reminder.type.label}',
+        '${vehicle.nickname} needs ${reminder.type.label} service.',
+        newReminder.dueDate!,
+      );
+    }
     
     print('Reminder completed and new reminder created');
   }
